@@ -45,13 +45,13 @@ var User = module.exports = mongoose.model('User', UserSchama);
 
 module.exports.getUserByUsername = async function (username) {
     var query = { username: username };
-    var res = await User.findOne(query);
-    return res;
+    var user = await User.findOne(query);
+    return user;
 };
 
 module.exports.getUserById = async function (id) {
-    var res = await User.findById(id);
-    return res;
+    var user = await User.findById(id);
+    return user;
 };
 
 module.exports.comparePassword = function (candidatePassword, hash, callback) {

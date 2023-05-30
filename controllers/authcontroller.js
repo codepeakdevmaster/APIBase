@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const auth = require('../middlewares/auth');
 var User = require('../models/user.model');
 
-router.post('/login', async function (req, res) {
+router.post('/login', async (req, res) => {
     let request = req.body;
     var user = await User.findOne({ username: request.username });
     if (!user) {
@@ -69,8 +69,23 @@ router.post('/login', async function (req, res) {
     }
 });
 
-router.post('/logout', function (req, res) {
-
+router.post('/logout', auth, async (req, res) => {
+    await User.findByIdAndUpdate(req.sessionUser.userId, {
+        token: null,
+        lastsessionend: Date.now(),
+        currentsession: null
+    }).then(_ => {
+        res.status(200).json({
+            status: 200,
+            messgae: "Logged out successfully"
+        });
+    }).catch((err) => {
+        console.log(err);
+        res.status(500).json({
+            status: 500,
+            message: "Something went wrong! Please try again later."
+        })
+    });
 });
 
 module.exports = router;

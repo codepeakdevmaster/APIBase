@@ -20,7 +20,7 @@ router.post('', auth, async function (req, res) {
                     currentsession: null,
                     token: null,
                     createdat: Date.now(),
-                    createdby: request.sessionUser
+                    createdby: request.sessionUser.username
                 });
                 newUser.save().then(user => {
                     res.status(200).json({
