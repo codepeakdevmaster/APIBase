@@ -7,13 +7,14 @@ const passport = require('passport');
 const cors = require('cors');
 const logger = require('morgan');
 const auth = require('./controllers/authcontroller');
+const user = require('./controllers/usercontroller');
 
 const app = express();
 app.use(cors());
 app.use(logger(function (tokens, req, res) {
     return [
         Date(),
-        req.headers['authorization'],
+        req.headers['authorization'] ? 'WA' : 'WOA',
         tokens.method(req, res),
         tokens.url(req, res),
         tokens.status(req, res),
@@ -42,6 +43,8 @@ app.get('/ping', (req, res) => {
 });
 
 app.use('/auth', auth);
+app.use('/user', user);
+
 //set port
 app.set('port', (process.env.PORT || 4000));
 
