@@ -14,7 +14,7 @@ app.use(cors());
 app.use(logger(function (tokens, req, res) {
     return [
         Date(),
-        req.headers['authorization'] ? 'WA' : 'WOA',
+        req.headers['authorization'] ? '[WA]' : '[WOA]',
         tokens.method(req, res),
         tokens.url(req, res),
         tokens.status(req, res),
@@ -38,8 +38,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-app.get('/ping', (req, res) => {
-    res.json({ message: 'pong! CodepeakDaily API is up and running.' });
+app.get('/ping', (_, res) => {
+    console.log('Someone checked our hartbeat, and what? Our heart is beating in the perfect order.');
+    res.json({ message: 'Pong! CodepeakDaily API is up and running.' });
 });
 
 app.use('/auth', auth);

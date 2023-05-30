@@ -38,7 +38,7 @@ router.post('/login', async function (req, res) {
                     try {
                         //Creating jwt token
                         token = jwt.sign(
-                            { userId: user._id, username: user.username },
+                            { userId: user._id, username: user.username, roles: user.roles },
                             process.env.TOKEN_SECRET || "QWCPDAILYKey",
                         );
                     } catch (err) {
