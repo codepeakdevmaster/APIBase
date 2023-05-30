@@ -22,7 +22,7 @@ router.post('', auth, async function (req, res) {
                     createdat: Date.now(),
                     createdby: request.sessionUser.username
                 });
-                newUser.save().then(user => {
+                newUser.save().then(_ => {
                     res.status(200).json({
                         status: 200,
                         message: "User created successfully."
@@ -42,6 +42,35 @@ router.post('', auth, async function (req, res) {
             message: "The user already exists."
         });
     }
+});
+
+router.get('', auth, async (req, res) => {
+    var users = await User.find().catch((err) => {
+        console.log(err);
+        res.status(500).json({
+            status: 500,
+            message: "Error fetching list of users"
+        });
+    });
+    var response = [];
+    users.map((v, _) => {
+        response.push({
+            id: v._id,
+            username: v.username,
+            roles: v.roles,
+            permissions: v.permissions,
+            lastsession: v.lastsession,
+            lastsessionend: v.lastsessionend,
+            currentsession: v.currentsession,
+            createdat: v.createdat,
+            createdby: v.createdby,
+        })
+    });
+    res.status(200).json({
+        status: 200,
+        message: "Success",
+        data: response
+    });
 });
 
 module.exports = router;
