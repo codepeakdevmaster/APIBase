@@ -73,4 +73,53 @@ router.get('', auth, async (req, res) => {
     });
 });
 
+router.get('/:id', auth, async (req, res) => {
+    let id = req.params.id;
+    var v = await User.findById(id).catch(err => {
+        res.status(500).json({
+            status: 500,
+            message: "Error finding user."
+        });
+    });
+    if (!v)
+        res.status(404).json({
+            status: 400,
+            message: "User not found"
+        });
+    else
+        res.status(200).json({
+            status: 200,
+            message: "User found",
+            data: {
+                id: v._id,
+                username: v.username,
+                roles: v.roles,
+                permissions: v.permissions,
+                lastsession: v.lastsession,
+                lastsessionend: v.lastsessionend,
+                currentsession: v.currentsession,
+                createdat: v.createdat,
+                createdby: v.createdby,
+            }
+        });
+});
+
+router.delete('/:id', auth, async (req, res) => {
+    let id = req.params.id;
+    await User.findByIdAndDelete(id)
+        .then(_ => {
+            res.status(200).json({
+                status: 200,
+                message: "Deleted user successfully."
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                status: 500,
+                message: "Error deleting user."
+            });
+        });
+
+});
+
 module.exports = router;
