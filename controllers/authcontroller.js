@@ -4,8 +4,20 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const auth = require('../middlewares/auth');
 var User = require('../models/user.model');
+const { validate, Joi } = require('express-validation')
 
-router.post('/login', async (req, res) => {
+const loginValidation = {
+    body: Joi.object({
+        username: Joi.string()
+            .email()
+            .required(),
+        password: Joi.string()
+            .regex(/[a-zA-Z0-9]{3,30}/)
+            .required(),
+    }),
+};
+
+router.post('/login', validate(loginValidation, {}, {}), async (req, res) => {
     let request = req.body;
     var user = await User.findOne({ username: request.username });
     if (!user) {

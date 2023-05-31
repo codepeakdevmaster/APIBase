@@ -4,8 +4,22 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const auth = require('../middlewares/auth');
 var User = require('../models/user.model');
+const { validate, Joi } = require('express-validation');
 
-router.post('', auth, async function (req, res) {
+const userValidation = {
+    body: Joi.object({
+        username: Joi.string()
+            .email()
+            .required(),
+        password: Joi.string()
+            .regex(/[a-zA-Z0-9]{3,30}/)
+            .required(),
+        roles: Joi.array()
+            .required()
+    })
+};
+
+router.post('', auth, validate(userValidation, {}, {}), async function (req, res) {
     let request = req.body;
     let user = await User.getUserByUsername(request.username);
     if (!user) {
@@ -20,7 +34,7 @@ router.post('', auth, async function (req, res) {
                     currentsession: null,
                     token: null,
                     createdat: Date.now(),
-                    createdby: request.sessionUser.username
+                    createdby: req.sessionUser.username
                 });
                 newUser.save().then(_ => {
                     res.status(200).json({
@@ -83,7 +97,7 @@ router.get('/:id', auth, async (req, res) => {
     });
     if (!v)
         res.status(404).json({
-            status: 400,
+            status: 404,
             message: "User not found"
         });
     else
