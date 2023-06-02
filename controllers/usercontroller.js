@@ -133,7 +133,6 @@ router.delete('/:id', auth, async (req, res) => {
                 message: "Error deleting user."
             });
         });
-
 });
 
 module.exports = router;

@@ -9,7 +9,8 @@ const logger = require('morgan');
 const auth = require('./controllers/authcontroller');
 const user = require('./controllers/usercontroller');
 const course = require('./controllers/coursecontroller');
-const { ValidationError } = require('express-validation')
+const batch = require('./controllers/batchcontroller');
+const { ValidationError } = require('express-validation');
 
 const app = express();
 app.use(cors());
@@ -48,6 +49,7 @@ app.get('/ping', (_, res) => {
 app.use('/auth', auth);
 app.use('/user', user);
 app.use('/course', course);
+app.use('/batch', batch);
 app.use(function (err, req, res, next) {
     if (err instanceof ValidationError) {
         return res.status(err.statusCode).json({

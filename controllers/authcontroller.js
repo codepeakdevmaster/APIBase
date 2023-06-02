@@ -52,6 +52,9 @@ router.post('/login', validate(loginValidation, {}, {}), async (req, res) => {
                         token = jwt.sign(
                             { userId: user._id, username: user.username, roles: user.roles },
                             process.env.TOKEN_SECRET || "QWCPDAILYKey",
+                            {
+                                expiresIn: "168h",
+                            }
                         );
                     } catch (err) {
                         console.log(err);

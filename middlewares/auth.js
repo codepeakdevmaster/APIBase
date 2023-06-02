@@ -34,7 +34,6 @@ async function authenticateToken(req, res, next) {
                 message: "Not authorized."
             });
         }
-        console.log(user);
         req.sessionUser = user
 
         next()

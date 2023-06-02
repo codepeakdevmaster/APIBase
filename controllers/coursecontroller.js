@@ -75,7 +75,7 @@ router.put('/:id', auth, validate(courseValidation, {}, {}), async (req, res) =>
 });
 
 router.get('', auth, async (req, res) => {
-    var courses = await Course.find().catch(err => {
+    var courses = await Course.find({ active: true }).catch(err => {
         console.log(err);
         res.status(500).json({
             status: 500,
@@ -109,21 +109,25 @@ router.get('/:id', auth, async (req, res) => {
     });
 });
 
+/// Here we are doing only a soft delete on the course collection.
 router.delete('/:id', auth, async (req, res) => {
     let id = req.params.id;
-    await Course.findByIdAndDelete(id)
-        .then(_ => {
-            res.status(200).json({
-                status: 200,
-                message: "Deleted course successfully."
-            });
-        })
-        .catch(err => {
-            res.status(500).json({
-                status: 500,
-                message: "Error deleting course."
-            });
+    await Course.findByIdAndUpdate(id, {
+        active: false,
+        updatedat: Date.now(),
+        updatedby: req.sessionUser.username
+    }).then(_ => {
+        res.status(200).json({
+            status: 200,
+            message: "Deleted course successfully."
         });
+    }).catch(err => {
+        console.log(err);
+        res.status(500).json({
+            status: 500,
+            message: "Error deleting course."
+        });
+    });
 });
 
 module.exports = router;

@@ -6,6 +6,10 @@ let CourseSchema = mongoose.Schema({
         index: true,
         default: ''
     },
+    active: {
+        type: Boolean,
+        default: true,
+    },
     createdat: {
         type: Date,
         default: null,
