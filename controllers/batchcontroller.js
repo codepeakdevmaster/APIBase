@@ -15,6 +15,10 @@ const batchValidation = {
             .required(),
         enddate: Joi.date()
             .required(),
+        starttime: Joi.string()
+            .required(),
+        endtime: Joi.string()
+            .required(),
         seats: Joi.number()
             .required()
     })
@@ -31,6 +35,8 @@ router.post('', auth, validate(batchValidation, {}, {}), async (req, res) => {
             availableseats: request.seats,
             startdate: request.startdate,
             enddate: request.enddate,
+            starttime: request.starttime,
+            endtime: request.endtime,
             createdat: Date.now(),
             createdby: req.sessionUser.username
         });
@@ -76,6 +82,8 @@ router.put('/:id', auth, validate(batchValidation, {}, {}), async (req, res) => 
             availableseats: request.seats,
             startdate: request.startdate,
             enddate: request.enddate,
+            starttime: request.starttime,
+            endtime: request.endtime,
             updatedat: Date.now(),
             updatedby: req.sessionUser.username
         }).then(_ => {
@@ -120,6 +128,8 @@ router.get('', auth, async (req, res) => {
             course: course.coursename,
             startdate: v.startdate,
             enddate: v.enddate,
+            starttime: v.starttime,
+            endtime: v.endtime,
             seats: v.seats,
             availableseats: v.availableseats,
             createdby: v.createdby,
@@ -164,6 +174,8 @@ router.get('/:id', auth, async (req, res) => {
             course: course.coursename,
             startdate: batch.startdate,
             enddate: batch.enddate,
+            starttime: batch.starttime,
+            endtime: batch.endtime,
             seats: batch.seats,
             availableseats: batch.availableseats,
             createdby: batch.createdby,
@@ -180,7 +192,7 @@ router.get('/:id', auth, async (req, res) => {
 });
 
 /// Here we are doing only a soft delete on the batch collection.
-router.delete('/:id', auth, async (req, res)=> {
+router.delete('/:id', auth, async (req, res) => {
     let id = req.params.id;
     await Batch.findByIdAndUpdate(id, {
         active: false,
@@ -199,7 +211,5 @@ router.delete('/:id', auth, async (req, res)=> {
         });
     });
 });
-
-// TODO DELETE/:id
 
 module.exports = router;

@@ -26,6 +26,14 @@ let BatchSchema = mongoose.Schema({
         type: Date,
         default: null,
     },
+    starttime: {
+        type: String,
+        default: null
+    },
+    endtime: {
+        type: String,
+        default: null
+    },
     active: {
         type: Boolean,
         default: true,
