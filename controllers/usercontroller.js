@@ -24,7 +24,23 @@ router.post('', auth, validate(userValidation, {}, {}), async function (req, res
     let user = await User.getUserByUsername(request.username);
     if (!user) {
         bcrypt.genSalt(10, function (err, salt) {
+            if (err) {
+                console.log('genSalt Error');
+                console.log(err);
+                res.status(400).json({
+                    status: 400,
+                    message: "Error creating user."
+                });
+            }
             bcrypt.hash(request.password, salt, function (err, hash) {
+                if (err) {
+                    console.log('hash Error');
+                    console.log(err);
+                    res.status(400).json({
+                        status: 400,
+                        message: "Error creating user."
+                    });
+                }
                 var newUser = new User({
                     username: request.username,
                     password: hash,
