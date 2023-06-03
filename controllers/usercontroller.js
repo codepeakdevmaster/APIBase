@@ -58,6 +58,8 @@ router.post('', auth, validate(userValidation, {}, {}), async function (req, res
                         message: "User created successfully."
                     });
                 }).catch(err => {
+                    console.log(newUser);
+                    console.log("General error in user creation.");
                     console.log(err);
                     res.status(400).json({
                         status: 400,
