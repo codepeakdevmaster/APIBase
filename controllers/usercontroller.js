@@ -21,7 +21,15 @@ const userValidation = {
 
 router.post('', auth, validate(userValidation, {}, {}), async function (req, res) {
     let request = req.body;
-    let user = await User.getUserByUsername(request.username);
+    console.log(request);
+    let user = await User.getUserByUsername(request.username).catch((err) => {
+        console.log("Error looking for user.");
+        console.log(err);
+        res.status(400).json({
+            status: 400,
+            message: "Error creating user."
+        });
+    });
     if (!user) {
         bcrypt.genSalt(10, function (err, salt) {
             if (err) {

@@ -52,9 +52,12 @@ app.use('/course', course);
 app.use('/batch', batch);
 app.use(function (err, req, res, next) {
     if (err instanceof ValidationError) {
+        console.log(req.body);
+        console.log(err);
+        console.log(err.details);
         return res.status(err.statusCode).json({
             status: err.statusCode,
-            message: err.message
+            message: err.error
         });
     }
     return res.status(500).json({
