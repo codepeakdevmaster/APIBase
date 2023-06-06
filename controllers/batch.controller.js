@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../middlewares/auth');
+const auth = require('../middlewares/auth.middleware');
 var Batch = require('../models/batch.model');
 var Course = require('../models/course.model');
 const { validate, Joi } = require('express-validation');

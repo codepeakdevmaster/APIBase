@@ -6,10 +6,11 @@ const session = require('express-session');
 const passport = require('passport');
 const cors = require('cors');
 const logger = require('morgan');
-const auth = require('./controllers/authcontroller');
-const user = require('./controllers/usercontroller');
-const course = require('./controllers/coursecontroller');
-const batch = require('./controllers/batchcontroller');
+const db = require("./config/database.config");
+const auth = require('./controllers/auth.controller');
+const user = require('./controllers/user.controller');
+const course = require('./controllers/course.controller');
+const batch = require('./controllers/batch.controller');
 const { ValidationError } = require('express-validation');
 
 const app = express();
@@ -72,5 +73,5 @@ app.set('port', (process.env.PORT || 4000));
 
 app.listen(app.get('port'), function () {
     console.log(`Server started on port ${app.get('port')}`);
-    require("./config/database").connect();
+    db.connect();
 });
