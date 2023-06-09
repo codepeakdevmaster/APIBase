@@ -1,9 +1,8 @@
 require("dotenv").config();
 const express = require('express');
+var http = require('http');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const session = require('express-session');
-const passport = require('passport');
 const cors = require('cors');
 const logger = require('morgan');
 const db = require("./config/database.config");
@@ -12,6 +11,8 @@ const user = require('./controllers/user.controller');
 const course = require('./controllers/course.controller');
 const batch = require('./controllers/batch.controller');
 const { ValidationError } = require('express-validation');
+var Response = require('./middlewares/response.middleware');
+var Authorize = require('./middlewares/auth.middleware');
 
 const app = express();
 app.use(cors());
@@ -30,48 +31,73 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-//express session
-app.use(session({
-    secret: 'secret',
-    saveUninitialized: true,
-    resave: true
-}));
-
-
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(Response);
+app.use(Authorize);
 
 
 app.get('/ping', (_, res) => {
     console.log('Someone checked our hartbeat, and what? Our heart is beating in the perfect order.');
-    res.json({ message: 'Pong! CodepeakDaily API is up and running.' });
+    res.Success('Pong! CodepeakDaily API is up and running.');
 });
 
 app.use('/auth', auth);
 app.use('/user', user);
 app.use('/course', course);
 app.use('/batch', batch);
+
 app.use(function (err, req, res, next) {
     if (err instanceof ValidationError) {
         console.log(req.body);
         console.log(err);
         console.log(err.details);
-        return res.status(err.statusCode).json({
-            status: err.statusCode,
-            message: err.error
-        });
+        return res.Custom(err.statusCode, err.error);
     }
-    return res.status(500).json({
-        status: 500,
-        message: "Wrong request",
-        data: err
-    });
+    return res.Custom(500, "Wrong request", err);
 });
 
 //set port
-app.set('port', (process.env.PORT || 4000));
+var port = (process.env.PORT || 4000);
+app.set('port', port);
 
-app.listen(app.get('port'), function () {
+var server = http.createServer(app);
+
+server.on('error', onError);
+server.on('listening', onListening);
+
+function onError(error) {
+    if (error.syscall !== 'listen') {
+        throw error;
+    }
+
+    var bind = typeof port === 'string' ?
+        'Pipe ' + port :
+        'Port ' + port;
+
+    // handle specific listen errors with friendly messages
+    switch (error.code) {
+        case 'EACCES':
+            console.error(bind + ' requires elevated privileges');
+            process.exit(1);
+            break;
+        case 'EADDRINUSE':
+            console.error(bind + ' is already in use');
+            process.exit(1);
+            break;
+        default:
+            throw error;
+    }
+}
+
+function onListening() {
+    var addr = server.address();
+    var bind = typeof addr === 'string' ?
+        'pipe ' + addr :
+        'port ' + addr.port;
+    console.log('Listening on ' + bind);
+}
+
+server.listen(app.get('port'), function () {
     console.log(`Server started on port ${app.get('port')}`);
     db.connect();
 });
+

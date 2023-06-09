@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const auth = require('../middlewares/auth.middleware');
 var User = require('../models/user.model');
 const { validate, Joi } = require('express-validation')
 
@@ -20,26 +19,15 @@ const loginValidation = {
 router.post('/login', validate(loginValidation, {}, {}), async (req, res) => {
     let request = req.body;
     var user = await User.findOne({ username: request.username });
-    if (!user) {
-        res.status(404).json({
-            status: 404,
-            message: "User not found."
-        });
-    } else {
+    if (!user) return res.NotFound("User not found");
+    else {
         User.comparePassword(request.password, user.password, async function (err, isMatch) {
             if (err) {
                 console.log(err);
-                res.status(404).json({
-                    status: 404,
-                    message: "User not found."
-                });
+                return res.NotFound("User not found");
             } else {
-                if (!isMatch) {
-                    res.status(404).json({
-                        status: 404,
-                        message: "User not found."
-                    });
-                } else {
+                if (!isMatch) return res.NotFound("User not found");
+                else {
                     if (!user.currentsession) {
                         user.currentsession = Date.now();
                     } else {
@@ -69,14 +57,10 @@ router.post('/login', validate(loginValidation, {}, {}), async (req, res) => {
                         console.log("Error updating the session for " + user.username);
                         console.log(er);
                     });
-                    res.status(200).json({
-                        status: 200,
-                        message: 'User found',
-                        data: {
-                            token: user.token,
-                            roles: user.roles,
-                            permissions: []
-                        }
+                    return res.Success("User found", {
+                        token: user.token,
+                        roles: user.roles,
+                        permissions: []
                     });
                 }
             }
@@ -84,23 +68,17 @@ router.post('/login', validate(loginValidation, {}, {}), async (req, res) => {
     }
 });
 
-router.post('/logout', auth, async (req, res) => {
+router.post('/logout', async (req, res) => {
     await User.findByIdAndUpdate(req.sessionUser.userId, {
         token: null,
         lastsessionend: Date.now(),
         currentsession: null
-    }).then(_ => {
-        res.status(200).json({
-            status: 200,
-            messgae: "Logged out successfully"
+    })
+        .then(_ => { return res.Success("Logged out successfully."); })
+        .catch((err) => {
+            console.log(err);
+            return res.Exception("Something went wrong! Please try again later.");
         });
-    }).catch((err) => {
-        console.log(err);
-        res.status(500).json({
-            status: 500,
-            message: "Something went wrong! Please try again later."
-        })
-    });
 });
 
 module.exports = router;

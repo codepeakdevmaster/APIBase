@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const auth = require('../middlewares/auth.middleware');
 var User = require('../models/user.model');
 const { validate, Joi } = require('express-validation');
 
@@ -19,35 +17,27 @@ const userValidation = {
     })
 };
 
-router.post('', auth, validate(userValidation, {}, {}), async function (req, res) {
+router.post('', validate(userValidation, {}, {}), async function (req, res) {
     let request = req.body;
     console.log(request);
-    let user = await User.getUserByUsername(request.username).catch((err) => {
-        console.log("Error looking for user.");
-        console.log(err);
-        res.status(400).json({
-            status: 400,
-            message: "Error creating user."
+    let user = await User.getUserByUsername(request.username)
+        .catch((err) => {
+            console.log("Error looking for user.");
+            console.log(err);
+            return res.Error("Error creating user.");
         });
-    });
     if (!user) {
         bcrypt.genSalt(10, function (err, salt) {
             if (err) {
                 console.log('genSalt Error');
                 console.log(err);
-                res.status(400).json({
-                    status: 400,
-                    message: "Error creating user."
-                });
+                return res.Error("Error creating user.");
             }
             bcrypt.hash(request.password, salt, function (err, hash) {
                 if (err) {
                     console.log('hash Error');
                     console.log(err);
-                    res.status(400).json({
-                        status: 400,
-                        message: "Error creating user."
-                    });
+                    return res.Error("Error creating user.");
                 }
                 var newUser = new User({
                     username: request.username,
@@ -60,38 +50,25 @@ router.post('', auth, validate(userValidation, {}, {}), async function (req, res
                     createdat: Date.now(),
                     createdby: req.sessionUser.username
                 });
-                newUser.save().then(_ => {
-                    res.status(200).json({
-                        status: 200,
-                        message: "User created successfully."
+                newUser.save()
+                    .then(_ => { return res.Success("User created successfully."); })
+                    .catch(err => {
+                        console.log(newUser);
+                        console.log("General error in user creation.");
+                        console.log(err);
+                        return res.Error("Error creating user.");
                     });
-                }).catch(err => {
-                    console.log(newUser);
-                    console.log("General error in user creation.");
-                    console.log(err);
-                    res.status(400).json({
-                        status: 400,
-                        message: "Error creating user."
-                    });
-                });
             });
         });
-    } else {
-        res.status(409).json({
-            status: 409,
-            message: "The user already exists."
-        });
-    }
+    } else return res.Exists("The user already exists");
 });
 
-router.get('', auth, async (req, res) => {
-    var users = await User.find().catch((err) => {
-        console.log(err);
-        res.status(500).json({
-            status: 500,
-            message: "Error fetching list of users"
+router.get('', async (req, res) => {
+    var users = await User.find()
+        .catch((err) => {
+            console.log(err);
+            return res.Exception("Error fetching list of users.");
         });
-    });
     var response = [];
     users.map((v, _) => {
         response.push({
@@ -106,58 +83,37 @@ router.get('', auth, async (req, res) => {
             createdby: v.createdby,
         })
     });
-    res.status(200).json({
-        status: 200,
-        message: "Success",
-        data: response
-    });
+    return res.Success("Success", response);
 });
 
-router.get('/:id', auth, async (req, res) => {
+router.get('/:id', async (req, res) => {
     let id = req.params.id;
-    var v = await User.findById(id).catch(err => {
-        res.status(500).json({
-            status: 500,
-            message: "Error finding user."
+    var v = await User.findById(id)
+        .catch(err => {
+            return res.Exception("Error finding user.");
         });
+    if (!v) return res.NotFound("User not found.");
+    else return res.Success("User found", {
+        id: v._id,
+        username: v.username,
+        roles: v.roles,
+        permissions: v.permissions,
+        lastsession: v.lastsession,
+        lastsessionend: v.lastsessionend,
+        currentsession: v.currentsession,
+        createdat: v.createdat,
+        createdby: v.createdby,
     });
-    if (!v)
-        res.status(404).json({
-            status: 404,
-            message: "User not found"
-        });
-    else
-        res.status(200).json({
-            status: 200,
-            message: "User found",
-            data: {
-                id: v._id,
-                username: v.username,
-                roles: v.roles,
-                permissions: v.permissions,
-                lastsession: v.lastsession,
-                lastsessionend: v.lastsessionend,
-                currentsession: v.currentsession,
-                createdat: v.createdat,
-                createdby: v.createdby,
-            }
-        });
 });
 
-router.delete('/:id', auth, async (req, res) => {
+router.delete('/:id', async (req, res) => {
     let id = req.params.id;
     await User.findByIdAndDelete(id)
         .then(_ => {
-            res.status(200).json({
-                status: 200,
-                message: "Deleted user successfully."
-            });
+            return res.Success("Deleted user successfully.");
         })
         .catch(err => {
-            res.status(500).json({
-                status: 500,
-                message: "Error deleting user."
-            });
+            return res.Exception("Error deleting user.");
         });
 });
 
