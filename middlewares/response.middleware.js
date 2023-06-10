@@ -48,7 +48,8 @@ function Response(req, res, next) {
         });
         return res.status(code).json({
             status: code,
-            message: msg === '' ? "Request processed" : msg
+            message: msg === '' ? "Request processed" : msg,
+            data: obj
         });
     }
     
