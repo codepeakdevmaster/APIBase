@@ -32,7 +32,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use(Response);
-app.use(Authorize);
+// app.use(Authorize);
 
 
 app.get('/ping', (_, res) => {
@@ -41,9 +41,9 @@ app.get('/ping', (_, res) => {
 });
 
 app.use('/auth', auth);
-app.use('/user', user);
-app.use('/course', course);
-app.use('/batch', batch);
+app.use('/user', Authorize, user);
+app.use('/course', Authorize, course);
+app.use('/batch', Authorize, batch);
 
 app.use(function (err, req, res, next) {
     if (err instanceof ValidationError) {

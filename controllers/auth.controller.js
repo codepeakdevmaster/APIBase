@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 var User = require('../models/user.model');
 const { validate, Joi } = require('express-validation')
+var Authorize = require('./middlewares/auth.middleware');
 
 const loginValidation = {
     body: Joi.object({
@@ -68,7 +69,7 @@ router.post('/login', validate(loginValidation, {}, {}), async (req, res) => {
     }
 });
 
-router.post('/logout', async (req, res) => {
+router.post('/logout', Authorize, async (req, res) => {
     await User.findByIdAndUpdate(req.sessionUser.userId, {
         token: null,
         lastsessionend: Date.now(),
