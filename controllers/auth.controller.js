@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 var User = require('../models/user.model');
 const { validate, Joi } = require('express-validation')
-var Authorize = require('./middlewares/auth.middleware');
+var Authorize = require('../middlewares/auth.middleware');
 
 const loginValidation = {
     body: Joi.object({
