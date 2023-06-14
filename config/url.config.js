@@ -1,7 +1,7 @@
 var urls = [
     { path: "/", authorize: false },
     { path: "/ping", authorize: false },
-    { path: "/auth/login", auauthorizeth: false },
+    { path: "/auth/login", auauthorize: false },
     { path: "/auth", authorize: true },
     { path: "/user", authorize: true },
     { path: "/course", authorize: true },
