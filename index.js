@@ -10,6 +10,8 @@ const auth = require('./controllers/auth.controller');
 const user = require('./controllers/user.controller');
 const course = require('./controllers/course.controller');
 const batch = require('./controllers/batch.controller');
+const lead = require('./controllers/lead.controller');
+const urls = require('./config/url.config');
 const { ValidationError } = require('express-validation');
 var Response = require('./middlewares/response.middleware');
 var Authorize = require('./middlewares/auth.middleware');
@@ -32,15 +34,21 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use(Response);
-// app.use(MiniLogger);
-var noAuthUrls = ["/", "/ping", "/auth/login"];
 app.use((req, res, next) => {
-    noAuthUrls.includes(req.url) ?
-        next() :
-        Authorize(req, res, next);
+    var url = urls.filter((e) => { return e.path === req.url; });
+    if (url.length > 0) {
+        if (url[0].authorize) Authorize(req, res, next);
+        else next();
+    } else {
+        console.log("Request received on a nonlisted url: '" + req.url + "'.");
+        res.NotFound("Request not found");
+    }
 });
 
-
+app.get('/', (_, res) => {
+    console.log("Someone checked on our servers.");
+    res.Success('CodepeakDaily API is up and running');
+})
 app.get('/ping', (_, res) => {
     console.log('Someone checked our hartbeat, and what? Our heart is beating in the perfect order.');
     res.Success('Pong! CodepeakDaily API is up and running.');
@@ -49,20 +57,16 @@ app.use('/auth', auth);
 app.use('/user', user);
 app.use('/course', course);
 app.use('/batch', batch);
+app.use('/lead', lead);
 
 app.use(function (err, req, res, next) {
     if (err instanceof ValidationError) {
         console.log(req.body);
-        console.log(err);
+        console.error(err);
         console.log(err.details);
         return res.Custom(err.statusCode, err.error);
     }
     return res.Custom(500, "Wrong request", err);
-});
-
-
-app.use((req, res, next) => {
-    res.NotFound("Request not found");
 });
 //set port
 var port = (process.env.PORT || 4000);
