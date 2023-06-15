@@ -34,25 +34,19 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use(Response);
-app.use((req, res, next) => {
-    var url = urls.filter((e) => { return e.path === req.url; });
-    if (url.length > 0) {
-        if (url[0].authorize) Authorize(req, res, next);
-        else next();
-    } else {
-        console.log("Request received on a nonlisted url: '" + req.url + "'.");
-        res.NotFound("Request not found");
-    }
-});
+var noAuthUrls = ["/", "/ping", "/auth/login"];
+app.use((req, res, next) => { noAuthUrls.includes(req.url) ? next() : Authorize(req, res, next); });
 
 app.get('/', (_, res) => {
     console.log("Someone checked on our servers.");
     res.Success('CodepeakDaily API is up and running');
 })
+
 app.get('/ping', (_, res) => {
     console.log('Someone checked our hartbeat, and what? Our heart is beating in the perfect order.');
     res.Success('Pong! CodepeakDaily API is up and running.');
 });
+
 app.use('/auth', auth);
 app.use('/user', user);
 app.use('/course', course);

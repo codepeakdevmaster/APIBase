@@ -6,7 +6,7 @@ var urls = [
     { path: "/user", authorize: true },
     { path: "/course", authorize: true },
     { path: "/batch", authorize: true },
-    { path: "/leads", authorize: true },
+    { path: "/lead", authorize: true },
 ];
 
 module.exports = urls;
