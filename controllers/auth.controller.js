@@ -69,7 +69,7 @@ router.post('/login', validate(loginValidation, {}, {}), async (req, res) => {
     }
 });
 
-router.post('/logout', Authorize, async (req, res) => {
+router.post('/logout', async (req, res) => {
     await User.findByIdAndUpdate(req.sessionUser.userId, {
         token: null,
         lastsessionend: Date.now(),
@@ -80,6 +80,49 @@ router.post('/logout', Authorize, async (req, res) => {
             console.log(err);
             return res.Exception("Something went wrong! Please try again later.");
         });
+});
+
+router.post('/resetpassword', async (req, res) => {
+    let request = req.body; // {currentpassword: "", newpassword:""}
+    var user = await User.findOne({ username: req.sessionUser.username });
+    if (!user) return res.NotFound("User not found");
+    else {
+        User.comparePassword(request.currentpassword, user.password, async function (err, isMatch) {
+            if (err) {
+                console.log(err);
+                return res.Error("Error validating your current password. Please try again later.");
+            } else {
+                if (!isMatch) return res.Error("You entered a wrong password. Please check your current password.");
+                else {
+                    bcrypt.genSalt(10, function (err, salt) {
+                        if (err) {
+                            console.log('genSalt Error on password reset');
+                            console.log(err);
+                            return res.Error("Error updating password.");
+                        }
+                        bcrypt.hash(request.newpassword, salt, async function (err, hash) {
+                            if (err) {
+                                console.log('hash Error on password reset');
+                                console.log(err);
+                                return res.Error("Error updating password.");
+                            }
+                            await User.findByIdAndUpdate(req.sessionUser.userId, {
+                                password: hash,
+                                updatedat: Date.now(),
+                                updatedby: req.sessionUser.username
+                            })
+                                .then(_ => {
+                                    return res.Success("Your password updated successfully.");
+                                })
+                                .catch(err => {
+                                    return res.Exception("Error updating password.");
+                                });;
+                        });
+                    });
+                }
+            }
+        });
+    }
 });
 
 module.exports = router;

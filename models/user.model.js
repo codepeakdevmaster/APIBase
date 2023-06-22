@@ -39,6 +39,14 @@ let UserSchama = mongoose.Schema({
         type: String,
         default: ''
     },
+    updatedat: {
+        type: Date,
+        default: null
+    },
+    updatedby: {
+        type: String,
+        default: ''
+    },
 });
 
 var User = module.exports = mongoose.model('User', UserSchama);
