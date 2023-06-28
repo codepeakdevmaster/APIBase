@@ -11,7 +11,7 @@ async function authenticateToken(req, res, next) {
     });
 
     var usr = await User.findOne({ token: thisToken }).catch((er) => {
-        console.log(er);
+        console.error(er);
         return res.status(401).json({
             status: 401,
             message: "Not authorized"
@@ -28,13 +28,13 @@ async function authenticateToken(req, res, next) {
 
     jwt.verify(thisToken, process.env.TOKEN_SECRET || 'QWCPDAILYKey', (err, user) => {
         if (err) {
-            console.log(err)
+            console.error(err)
             return res.status(403).json({
                 status: 403,
                 message: "Not authorized."
             });
         }
-        console.log(user);
+        // console.log(user);
         req.sessionUser = user
 
         next()

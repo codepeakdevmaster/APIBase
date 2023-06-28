@@ -61,6 +61,8 @@ router.post('/login', validate(loginValidation, {}, {}), async (req, res) => {
                     return res.Success("User found", {
                         token: user.token,
                         roles: user.roles,
+                        name: user.name,
+                        phone: user.phone,
                         permissions: []
                     });
                 }
@@ -83,7 +85,7 @@ router.post('/logout', async (req, res) => {
 });
 
 router.post('/resetpassword', async (req, res) => {
-    let request = req.body; // {currentpassword: "", newpassword:""}
+    let request = req.body; // Request Body structure => {currentpassword: "", newpassword:""}
     var user = await User.findOne({ username: req.sessionUser.username });
     if (!user) return res.NotFound("User not found");
     else {

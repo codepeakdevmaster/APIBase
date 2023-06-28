@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 var Course = require('../models/course.model');
+var courseCache = require('../cache/course.cache');
 const { validate, Joi } = require('express-validation');
 
 const courseValidation = {
@@ -21,6 +22,7 @@ router.post('', validate(courseValidation, {}, {}), async (req, res) => {
         });
         newCourse.save()
             .then(_ => {
+                courseCache.reset();
                 return res.Success("Course created successfully.");
             })
             .catch(err => {
@@ -45,7 +47,10 @@ router.put('/:id', validate(courseValidation, {}, {}), async (req, res) => {
             updatedat: Date.now(),
             updatedby: req.sessionUser.username
         })
-            .then(_ => { return res.Success("Course Updated Successfully"); })
+            .then(_ => {
+                courseCache.reset();
+                return res.Success("Course Updated Successfully");
+            })
             .catch(err => {
                 console.log(err);
                 return res.Exception("Error updating course details.");
@@ -59,6 +64,7 @@ router.get('', async (req, res) => {
             console.log(err);
             return res.Exception("Error fetching list of courses");
         });
+    courseCache.save(courses);
     return res.Success("Success", courses);
 });
 
@@ -81,7 +87,10 @@ router.delete('/:id', async (req, res) => {
         updatedat: Date.now(),
         updatedby: req.sessionUser.username
     })
-        .then(_ => { return res.Success("Deleted course successfully."); })
+        .then(_ => {
+            courseCache.reset();
+            return res.Success("Deleted course successfully.");
+        })
         .catch(err => {
             console.log(err);
             return res.Exception("Error deleting course.");

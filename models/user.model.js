@@ -7,6 +7,14 @@ let UserSchama = mongoose.Schema({
         index: true,
         default: '',
     },
+    name: {
+        type: String,
+        default: ''
+    },
+    phone: {
+        type: String,
+        default: ''
+    },
     roles: {
         type: Array,
         default: [],

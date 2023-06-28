@@ -6,6 +6,10 @@ const { validate, Joi } = require('express-validation');
 
 const userValidation = {
     body: Joi.object({
+        name: Joi.string()
+            .required(),
+        phone: Joi.string()
+            .required(),
         username: Joi.string()
             .email()
             .required(),
@@ -41,6 +45,8 @@ router.post('', validate(userValidation, {}, {}), async function (req, res) {
                 }
                 var newUser = new User({
                     username: request.username,
+                    name: request.name,
+                    phone: request.phone,
                     password: hash,
                     roles: request.roles,
                     lastsession: null,
@@ -74,6 +80,8 @@ router.get('', async (req, res) => {
         response.push({
             id: v._id,
             username: v.username,
+            name: v.name,
+            phone: v.phone,
             roles: v.roles,
             permissions: v.permissions,
             lastsession: v.lastsession,
@@ -96,6 +104,8 @@ router.get('/:id', async (req, res) => {
     else return res.Success("User found", {
         id: v._id,
         username: v.username,
+        name: v.name,
+        phone: v.phone,
         roles: v.roles,
         permissions: v.permissions,
         lastsession: v.lastsession,

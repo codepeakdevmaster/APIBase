@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 var Batch = require('../models/batch.model');
 var Course = require('../models/course.model');
+var courseCache = require('../cache/course.cache');
 const { validate, Joi } = require('express-validation');
 
 const batchValidation = {
@@ -51,12 +52,12 @@ router.post('', validate(batchValidation, {}, {}), async (req, res) => {
 router.put('/:id', validate(batchValidation, {}, {}), async (req, res) => {
     let id = req.params.id;
     let request = req.body;
-    var course = await Batch.findById(id)
+    var batch = await Batch.findById(id)
         .catch(err => {
             console.log(err);
             return res.Exception("Error finding batch.");
         });
-    if (!course) return res.NotFound("Batch not found");
+    if (!batch) return res.NotFound("Batch not found");
     else {
         await Batch.findByIdAndUpdate(id, {
             batchname: request.batchname,
@@ -85,12 +86,17 @@ router.get('', async (req, res) => {
             return res.Exception("Error fetching list of batches");
         });
 
-    var courses = await Course.find({ active: true })
-        .catch(err => {
-            console.log("Error fetching courses for batch data");
-            console.log(err);
-            return res.Exception("Error fetching list of batches");
-        })
+    var courses = [];
+    courses = courseCache.read();
+    if (courses.length === 0) {
+        courses = await Course.find({ active: true })
+            .catch(err => {
+                console.log("Error fetching courses for batch data");
+                console.log(err);
+                return res.Exception("Error fetching list of batches");
+            });
+        courseCache.save(courses);
+    }
     var response = [];
     batches.map((v, _) => {
         var course = courses.find(x => x.id === v.courseid);
@@ -123,11 +129,14 @@ router.get('/:id', async (req, res) => {
         });
     if (!batch) return res.NotFound("Batch not found.");
     else {
-        var course = Course.findById(batch.courseid)
-            .catch(err => {
-                console.log(err);
-                return res.Exception("Error finding course for batch details.");
-            });
+        var course = courseCache.findById(batch.courseid);
+        if (!course) {
+            Course.findById(batch.courseid)
+                .catch(err => {
+                    console.log(err);
+                    return res.Exception("Error finding course for batch details.");
+                });
+        }
         var response = {
             id: batch._id,
             batchname: batch.batchname,

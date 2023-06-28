@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const logger = require('morgan');
+const compression = require('compression');
 const db = require("./config/database.config");
 const auth = require('./controllers/auth.controller');
 const user = require('./controllers/user.controller');
@@ -32,6 +33,7 @@ app.use(logger(function (tokens, req, res) {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(compression());
 
 app.use(Response);
 var noAuthUrls = ["/", "/ping", "/auth/login"];
