@@ -77,19 +77,21 @@ router.get('', async (req, res) => {
         });
     var response = [];
     users.map((v, _) => {
-        response.push({
-            id: v._id,
-            username: v.username,
-            name: v.name,
-            phone: v.phone,
-            roles: v.roles,
-            permissions: v.permissions,
-            lastsession: v.lastsession,
-            lastsessionend: v.lastsessionend,
-            currentsession: v.currentsession,
-            createdat: v.createdat,
-            createdby: v.createdby,
-        })
+        if (v.username != 'recover@codepeak.com') {
+            response.push({
+                id: v._id,
+                username: v.username,
+                name: v.name,
+                phone: v.phone,
+                roles: v.roles,
+                permissions: v.permissions,
+                lastsession: v.lastsession,
+                lastsessionend: v.lastsessionend,
+                currentsession: v.currentsession,
+                createdat: v.createdat,
+                createdby: v.createdby,
+            });
+        }
     });
     return res.Success("Success", response);
 });
