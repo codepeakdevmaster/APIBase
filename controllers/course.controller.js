@@ -76,8 +76,8 @@ router.get('', async (req, res) => {
             active: v.active,
         });
     });
-    courseCache.save(courses);
-    return res.Success("Success", courses);
+    courseCache.save(response);
+    return res.Success("Success", response);
 });
 
 router.get('/:id', async (req, res) => {
