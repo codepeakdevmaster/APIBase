@@ -64,6 +64,18 @@ router.get('', async (req, res) => {
             console.log(err);
             return res.Exception("Error fetching list of courses");
         });
+    var response = [];
+    courses.map((v, _) => {
+        response.push({
+            id: v._id,
+            coursename: v.coursename,
+            createdat: v.createdat,
+            createdby: v.createdby,
+            updatedat: v.updatedat,
+            updatedby: v.updatedby,
+            active: v.active,
+        });
+    });
     courseCache.save(courses);
     return res.Success("Success", courses);
 });
@@ -76,7 +88,15 @@ router.get('/:id', async (req, res) => {
             return res.Exception("Error finding course");
         });
     if (!course) return res.NotFound("Course not found");
-    else return res.Success("Course found", course);
+    else return res.Success("Course found", {
+        id: course._id,
+        coursename: course.coursename,
+        createdat: course.createdat,
+        createdby: course.createdby,
+        updatedat: course.updatedat,
+        updatedby: course.updatedby,
+        active: course.active
+    });
 });
 
 /// Here we are doing only a soft delete on the course collection.

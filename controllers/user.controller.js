@@ -90,6 +90,8 @@ router.get('', async (req, res) => {
                 currentsession: v.currentsession,
                 createdat: v.createdat,
                 createdby: v.createdby,
+                updatedat: v.updatedat,
+                updatedby: v.updatedby,
             });
         }
     });
@@ -115,6 +117,8 @@ router.get('/:id', async (req, res) => {
         currentsession: v.currentsession,
         createdat: v.createdat,
         createdby: v.createdby,
+        updatedat: v.updatedat,
+        updatedby: v.updatedby,
     });
 });
 
