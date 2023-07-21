@@ -77,7 +77,7 @@ router.get('', async (req, res) => {
         });
     var response = [];
     users.map((v, _) => {
-        if (v.username != 'recover@codepeak.com') {
+        if (v.username != 'recover@codepeak.com' && v.username != req.sessionUser.username) {
             response.push({
                 id: v._id,
                 username: v.username,
