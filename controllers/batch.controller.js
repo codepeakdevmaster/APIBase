@@ -99,12 +99,12 @@ router.get('', async (req, res) => {
     }
     var response = [];
     batches.map((v, _) => {
-        var course = courses.find(x => x.id === v.courseid);
+        var thisCourse = courses.find(x => x.id === v.courseid);
         response.push({
             id: v._id,
             batchname: v.batchname,
             courseid: v.courseid,
-            course: course.coursename,
+            course: !thisCourse ? "" : thisCourse.coursename,
             startdate: v.startdate,
             enddate: v.enddate,
             starttime: v.starttime,
@@ -129,9 +129,9 @@ router.get('/:id', async (req, res) => {
         });
     if (!batch) return res.NotFound("Batch not found.");
     else {
-        var course = courseCache.findById(batch.courseid);
-        if (!course) {
-            Course.findById(batch.courseid)
+        var thisCourse = courseCache.findById(batch.courseid);
+        if (!thisCourse) {
+            thisCourse = Course.findById(batch.courseid)
                 .catch(err => {
                     console.log(err);
                     return res.Exception("Error finding course for batch details.");
@@ -141,7 +141,7 @@ router.get('/:id', async (req, res) => {
             id: batch._id,
             batchname: batch.batchname,
             courseid: batch.courseid,
-            course: course.coursename,
+            course: !thisCourse ? "" : thisCourse.coursename,
             startdate: batch.startdate,
             enddate: batch.enddate,
             starttime: batch.starttime,
