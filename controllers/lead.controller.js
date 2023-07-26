@@ -81,7 +81,11 @@ router.get('', async (req, res) => {
             courseid: lead.courseid,
             course: course.coursename,
             qualification: lead.qualification,
-            status: lead.status
+            status: lead.status,
+            createdby: lead.createdby,
+            createdat: lead.createdat,
+            updatedat: lead.updatedat,
+            updatedby: lead.updatedby
         });
     });
     return res.Success("Success", response);
