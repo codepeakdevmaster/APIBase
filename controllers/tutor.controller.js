@@ -16,7 +16,7 @@ const TutorValidation = {
             .required(),
         joindate: Joi.date(),
         releivingdate: Joi.date(),
-        active: Joi.boolean(),
+        // active: Joi.boolean(),
         courses: Joi.array()
     })
 };
@@ -31,7 +31,7 @@ router.post('', validate(TutorValidation, {}, {}), async (req, res) => {
         qualification: request.qualification,
         joindate: request.joindate,
         releivingdate: request.releivingdate,
-        active: request.active,
+        // active: request.active,
         createdat: Date.now(),
         createdby: req.sessionUser.username
     });
@@ -54,7 +54,7 @@ router.put('/:id', validate(TutorValidation, {}, {}), async (req, res) => {
         qualification: request.qualification,
         joindate: request.joindate,
         releivingdate: request.releivingdate,
-        active: request.active,
+        // active: request.active,
         updatedat: Date.now(),
         updatedby: req.sessionUser.username
     })
@@ -90,7 +90,7 @@ router.get('', async (req, res) => {
             email: tutor.email,
             courses: tutorCourses,
             qualification: tutor.qualification,
-            active: tutor.active,
+            // active: tutor.active,
             joindate: tutor.joindate,
             releivingdate: tutor.releivingdate,
             createdby: tutor.createdby,
