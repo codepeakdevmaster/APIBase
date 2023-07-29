@@ -85,7 +85,11 @@ router.get('', async (req, res) => {
             phone: tutor.phone,
             email: tutor.email,
             courses: tutorCourses,
-            qualification: tutor.qualification
+            qualification: tutor.qualification,
+            createdby: tutor.createdby,
+            createdat: tutor.createdat,
+            updatedat: tutor.updatedat,
+            updatedby: tutor.updatedby
         });
     });
     return res.Success("Success", response);
