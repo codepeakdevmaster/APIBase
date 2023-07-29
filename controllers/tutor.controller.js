@@ -62,7 +62,7 @@ router.put('/:id', validate(TutorValidation, {}, {}), async (req, res) => {
 });
 
 router.get('', async (req, res) => {
-    var tutors = await Tutor.find({ active: true })
+    var tutors = await Tutor.find()//{ active: true }
         .catch(err => {
             console.error(err);
             return res.Exception("Error fetching list of tutors.");
