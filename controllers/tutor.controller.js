@@ -29,6 +29,8 @@ router.post('', validate(TutorValidation, {}, {}), async (req, res) => {
         email: request.email,
         courses: request.courses,
         qualification: request.qualification,
+        joindate: request.joindate,
+        releivingdate: request.releivingdate,
         active: request.active,
         createdat: Date.now(),
         createdby: req.sessionUser.username
@@ -50,6 +52,8 @@ router.put('/:id', validate(TutorValidation, {}, {}), async (req, res) => {
         email: request.email,
         courses: request.courses,
         qualification: request.qualification,
+        joindate: request.joindate,
+        releivingdate: request.releivingdate,
         active: request.active,
         updatedat: Date.now(),
         updatedby: req.sessionUser.username
@@ -87,6 +91,8 @@ router.get('', async (req, res) => {
             courses: tutorCourses,
             qualification: tutor.qualification,
             active: tutor.active,
+            joindate: tutor.joindate,
+            releivingdate: tutor.releivingdate,
             createdby: tutor.createdby,
             createdat: tutor.createdat,
             updatedat: tutor.updatedat,

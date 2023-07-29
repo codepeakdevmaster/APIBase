@@ -7,6 +7,7 @@ var urls = [
     { path: "/course", authorize: true },
     { path: "/batch", authorize: true },
     { path: "/lead", authorize: true },
+    { path: "/tutor", authorize: true },
 ];
 
 module.exports = urls;

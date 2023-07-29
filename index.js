@@ -12,6 +12,7 @@ const user = require('./controllers/user.controller');
 const course = require('./controllers/course.controller');
 const batch = require('./controllers/batch.controller');
 const lead = require('./controllers/lead.controller');
+const tutor = require('./controllers/tutor.controller');
 const urls = require('./config/url.config');
 const { ValidationError } = require('express-validation');
 var Response = require('./middlewares/response.middleware');
@@ -54,6 +55,8 @@ app.use('/user', user);
 app.use('/course', course);
 app.use('/batch', batch);
 app.use('/lead', lead);
+app.use('/tutor', tutor);
+
 
 app.use(function (err, req, res, next) {
     if (err instanceof ValidationError) {
