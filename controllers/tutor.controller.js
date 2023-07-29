@@ -86,6 +86,7 @@ router.get('', async (req, res) => {
             email: tutor.email,
             courses: tutorCourses,
             qualification: tutor.qualification,
+            active: tutor.active,
             createdby: tutor.createdby,
             createdat: tutor.createdat,
             updatedat: tutor.updatedat,
