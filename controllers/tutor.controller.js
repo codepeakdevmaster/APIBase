@@ -71,24 +71,24 @@ router.get('', async (req, res) => {
             console.error(err);
             return res.Exception("Error fetching list of tutors.");
         });
-    var courses = await Course.find()
-        .catch(err => {
-            console.error("Error fetching courses for tutor list.");
-            console.error(err);
-            return res.Exception("Error fetching list of tutors.");
-        });
+    // var courses = await Course.find()
+    //     .catch(err => {
+    //         console.error("Error fetching courses for tutor list.");
+    //         console.error(err);
+    //         return res.Exception("Error fetching list of tutors.");
+    //     });
     var response = [];
     tutors.map((tutor, _) => {
-        var tutorCourses = [];
-        if (tutor.courses.length > 0) {
-            tutorCourses = courses.filter(x => tutor.courses.includes(x._id));
-        }
+        // var tutorCourses = [];
+        // if (tutor.courses.length > 0) {
+        //     tutorCourses = courses.filter(x => tutor.courses.includes(x._id));
+        // }
         response.push({
             id: tutor._id,
             name: tutor.name,
             phone: tutor.phone,
             email: tutor.email,
-            courses: tutorCourses,
+            courses: tutor.courses,// tutorCourses,
             qualification: tutor.qualification,
             // active: tutor.active,
             joindate: tutor.joindate,
