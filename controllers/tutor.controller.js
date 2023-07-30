@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 var Tutor = require('../models/tutor.model');
-var Course = require('../models/course.model');
+// var Course = require('../models/course.model');
 const { validate, Joi } = require('express-validation');
 
 
@@ -71,18 +71,8 @@ router.get('', async (req, res) => {
             console.error(err);
             return res.Exception("Error fetching list of tutors.");
         });
-    // var courses = await Course.find()
-    //     .catch(err => {
-    //         console.error("Error fetching courses for tutor list.");
-    //         console.error(err);
-    //         return res.Exception("Error fetching list of tutors.");
-    //     });
     var response = [];
     tutors.map((tutor, _) => {
-        // var tutorCourses = [];
-        // if (tutor.courses.length > 0) {
-        //     tutorCourses = courses.filter(x => tutor.courses.includes(x._id));
-        // }
         response.push({
             id: tutor._id,
             name: tutor.name,
@@ -111,7 +101,7 @@ router.get('/:id', async (req, res) => {
         });
     if(!tutor) return res.NotFound("Tutor not found.");
     else {
-        var tutorCourses = [];
+        // var tutorCourses = [];
         // model.find({
         //     '_id': { $in: [
         //         mongoose.Types.ObjectId('4ed3ede8844f0f351100000c'),
@@ -121,8 +111,33 @@ router.get('/:id', async (req, res) => {
         // }, function(err, docs){
         //      console.log(docs);
         // });
+        var response = {
+            id: tutor._id,
+            name: tutor.name,
+            phone: tutor.phone,
+            email: tutor.email,
+            courses: tutor.courses,
+            qualification: tutor.qualification,
+            joindate: tutor.joindate,
+            releivingdate: tutor.releivingdate,
+            createdby: tutor.createdby,
+            createdat: tutor.createdat,
+            updatedat: tutor.updatedat,
+            updatedby: tutor.updatedby
+        };
+        return res.Success("Tutor found", response);
     }
 });
 
+
+router.delete('/:id', async (req, res) => {
+    let id = req.params.id;
+    await Tutor.findByIdAndDelete(id)
+        .then(_ => { return res.Success("Deleted tutor details."); })
+        .catch(err => {
+            console.error(err);
+            return res.Exception("Error deleting tutor.");
+        })
+});
 
 module.exports = router;
