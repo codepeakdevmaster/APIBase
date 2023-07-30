@@ -16,7 +16,6 @@ const TutorValidation = {
             .required(),
         joindate: Joi.date(),
         releivingdate: Joi.date(),
-        // active: Joi.boolean(),
         courses: Joi.array()
     })
 };

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-let TutorSchema = mongoose.Schema({
+let InternSchema = mongoose.Schema({
     userid: {
         type: String,
         default: ''
@@ -21,21 +21,13 @@ let TutorSchema = mongoose.Schema({
         type: String,
         default: ''
     },
-    courses: {
-        type: Array,
-        default: []
+    courseid: {
+        type: String,
+        default: ''
     },
-    joindate: {
-        type: Date,
-        default: null
-    },
-    releivingdate: {
-        type: Date,
-        default: null,
-    },
-    active: {
-        type: Boolean,
-        default: true
+    batchid: {
+        type: String,
+        default: ''
     },
     createdat: {
         type: Date,
@@ -55,4 +47,4 @@ let TutorSchema = mongoose.Schema({
     }
 });
 
-var Tutor = module.exports = mongoose.model('Tutor', TutorSchema);
+var Intern = module.exports = mongoose.model('Intern', InternSchema);
