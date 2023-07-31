@@ -74,6 +74,7 @@ router.get('', async (req, res) => {
     tutors.map((tutor, _) => {
         response.push({
             id: tutor._id,
+            userid: tutor.userid,
             name: tutor.name,
             phone: tutor.phone,
             email: tutor.email,
@@ -112,6 +113,7 @@ router.get('/:id', async (req, res) => {
         // });
         var response = {
             id: tutor._id,
+            userid: tutor.userid,
             name: tutor.name,
             phone: tutor.phone,
             email: tutor.email,

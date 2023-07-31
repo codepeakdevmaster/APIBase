@@ -70,6 +70,7 @@ router.get('', async (req, res) => {
     interns.map((intern, _) => {
         response.push({
             id: intern._id,
+            userid: intern.userid,
             name: intern.name,
             phone: intern.phone,
             email: intern.email,
@@ -106,6 +107,7 @@ router.get('/:id', async (req, res) => {
         // });
         var response = {
             id: intern._id,
+            userid: intern.userid,
             name: intern.name,
             phone: intern.phone,
             email: intern.email,
