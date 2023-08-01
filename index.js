@@ -57,7 +57,10 @@ app.use('/course', course);
 app.use('/batch', batch);
 app.use('/lead', lead);
 app.use('/tutor', tutor);
+app.use('/tutor/setuser', tutor);
 app.use('/intern', intern);
+app.use('/intern/setuser', intern);
+
 
 
 app.use(function (err, req, res, next) {
