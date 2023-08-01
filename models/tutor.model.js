@@ -56,3 +56,9 @@ let TutorSchema = mongoose.Schema({
 });
 
 var Tutor = module.exports = mongoose.model('Tutor', TutorSchema);
+
+module.exports.getTutorByEmail = async function (email) {
+    var query = { email: email };
+    var tutor = await Tutor.findOne(query);
+    return tutor;
+};

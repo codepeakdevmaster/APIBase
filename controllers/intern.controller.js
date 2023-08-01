@@ -124,15 +124,20 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-router.put('/setuser/:id', async (req, res) => {
+router.put('/setuser', async (req, res) => {
     let id = req.params.id;
     let request = req.body;
+    var intern = await Intern.getInternByEmail(request.email)
+        .catch(err => {
+            return res.Exception("Error finding intern.");
+        });
+    if (!intern) return res.NotFound("Intern not found.");
     var user = await User.getUserByUsername(request.email)
         .catch(err => {
             return res.Exception("Error finding user.");
         });
     if (!user) return res.NotFound("User not found.");
-    await Intern.findByIdAndUpdate(id, {
+    await Intern.findByIdAndUpdate(intern._id, {
         userid: user._id,
         updatedat: Date.now(),
         updatedby: req.sessionUser.username + '[UC]'

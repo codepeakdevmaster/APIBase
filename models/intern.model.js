@@ -48,3 +48,9 @@ let InternSchema = mongoose.Schema({
 });
 
 var Intern = module.exports = mongoose.model('Intern', InternSchema);
+
+module.exports.getInternByEmail = async function (email) {
+    var query = { email: email };
+    var intern = await Intern.findOne(query);
+    return intern;
+};
