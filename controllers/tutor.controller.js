@@ -145,7 +145,7 @@ router.post('/setuser', validate(TutorValidation, {}, {}), async (req, res) => {
             return res.Exception("Error finding user.");
         });
     if (!user) return res.NotFound("User not found.");
-    await Intern.findByIdAndUpdate(tutor._id, {
+    await Tutor.findByIdAndUpdate(tutor._id, {
         userid: user._id,
         updatedat: Date.now(),
         updatedby: req.sessionUser.username + '[UC]'
