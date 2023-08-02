@@ -62,6 +62,7 @@ router.post('/login', validate(loginValidation, {}, {}), async (req, res) => {
                         token: user.token,
                         roles: user.roles,
                         name: user.name,
+                        secchanged: user.secchanged,
                         phone: user.phone,
                         permissions: []
                     });
@@ -110,6 +111,7 @@ router.post('/resetpassword', async (req, res) => {
                             }
                             await User.findByIdAndUpdate(req.sessionUser.userId, {
                                 password: hash,
+                                secchanged: true,
                                 updatedat: Date.now(),
                                 updatedby: req.sessionUser.username
                             })
