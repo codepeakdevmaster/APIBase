@@ -39,6 +39,10 @@ let UserSchama = mongoose.Schema({
         type: String,
         default: null
     },
+    secchanged: {
+        type: Boolean,
+        default: false,
+    },
     createdat: {
         type: Date,
         default: null
