@@ -48,3 +48,9 @@ let LeadSchema = mongoose.Schema({
 });
 
 var Lead = module.exports = mongoose.model('Lead', LeadSchema);
+
+module.exports.getLeadByEmail = async function (email) {
+    var query = { email: email };
+    var lead = await Lead.findOne(query);
+    return lead;
+};

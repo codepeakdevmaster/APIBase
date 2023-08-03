@@ -125,7 +125,6 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/setuser', validate(InternValidation, {}, {}),  async (req, res) => {
-    let id = req.params.id;
     let request = req.body;
     var intern = await Intern.getInternByEmail(request.email)
         .catch(err => {

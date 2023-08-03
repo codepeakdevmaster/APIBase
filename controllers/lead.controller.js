@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 var Lead = require('../models/lead.model');
 var Course = require('../models/course.model');
+var Intern = require('../models/intern.model');
 const { validate, Joi } = require('express-validation');
 
 const LeadValidation = {
@@ -123,6 +124,30 @@ router.get('/:id', async (req, res) => {
         };
         return res.Success("Lead found", response);
     }
+});
+
+router.post('/setintern', validate(LeadValidation, {}, {}), async (req, res) => {
+    let request = req.body;
+    var lead = await Lead.getLeadByEmail(request.email)
+        .catch(err => {
+            return res.Exception("Error finding lead.");
+        });
+    if (!lead) return res.NotFound("Lead not found.");
+    var intern = await Intern.getInternByEmail(request.email)
+        .catch(err => {
+            return res.Exception("Error finding intern.");
+        });
+    if (!intern) return res.NotFound("Intern not found.");
+    await Lead.findOneAndUpdate(lead._id, {
+        internid: intern._id,
+        updatedat: Date.now(),
+        updatedby: req.sessionUser.username + '[IA]'
+    })
+        .then(_ => { return res.Success("Lead details updated successfully."); })
+        .catch(err => {
+            console.error(err);
+            return res.Exception("Error updating Lead details.");
+        });
 });
 
 router.delete('/:id', async (req, res) => {

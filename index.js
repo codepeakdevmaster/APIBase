@@ -56,6 +56,7 @@ app.use('/user', user);
 app.use('/course', course);
 app.use('/batch', batch);
 app.use('/lead', lead);
+app.use('/lead/setintern', lead);
 app.use('/tutor', tutor);
 app.use('/tutor/setuser', tutor);
 app.use('/intern', intern);

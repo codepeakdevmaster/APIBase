@@ -133,7 +133,7 @@ router.get('/:id', async (req, res) => {
 
 
 router.post('/setuser', validate(TutorValidation, {}, {}), async (req, res) => {
-    let id = req.params.id;
+    // let id = req.params.id;
     let request = req.body;
     var tutor = await Tutor.getTutorByEmail(request.email)
         .catch(err => {
