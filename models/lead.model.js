@@ -25,6 +25,10 @@ let LeadSchema = mongoose.Schema({
         type: String,
         default: ''
     },
+    internid: {
+        type: String,
+        default: ''
+    },
     createdat: {
         type: Date,
         default: null
