@@ -129,4 +129,38 @@ router.post('/resetpassword', async (req, res) => {
     }
 });
 
+router.post('/updatepassword', async(req, res) => {
+    let request = req.body; // Request Body structure => { newpassword:"" }
+    var user = await User.findOne({ username: req.sessionUser.username });
+    if (!user) return res.NotFound("User not found");
+    else {
+        bcrypt.genSalt(10, function (err, salt) {
+            if (err) {
+                console.log('genSalt Error on password update');
+                console.log(err);
+                return res.Error("Error updating password.");
+            }
+            bcrypt.hash(request.newpassword, salt, async function (err, hash) {
+                if (err) {
+                    console.log('hash Error on password reset');
+                    console.log(err);
+                    return res.Error("Error updating password.");
+                }
+                await User.findByIdAndUpdate(req.sessionUser.userId, {
+                    password: hash,
+                    secchanged: true,
+                    updatedat: Date.now(),
+                    updatedby: req.sessionUser.username
+                })
+                    .then(_ => {
+                        return res.Success("Your password updated successfully.");
+                    })
+                    .catch(err => {
+                        return res.Exception("Error updating password.");
+                    });;
+            });
+        });
+    }
+});
+
 module.exports = router;
