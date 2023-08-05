@@ -18,12 +18,12 @@ let LedgerSchema = mongoose.Schema({
         default: ''
     },
     debitamount: {
-        type:Number,
-        default: 0
+        type: String,
+        default: '0'
     },
     creditamount: {
-        type: Number,
-        default: 0
+        type: String,
+        default: '0'
     },
     createdat: {
         type: Date,
