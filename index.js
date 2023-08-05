@@ -14,7 +14,8 @@ const batch = require('./controllers/batch.controller');
 const lead = require('./controllers/lead.controller');
 const tutor = require('./controllers/tutor.controller');
 const intern = require('./controllers/intern.controller');
-const urls = require('./config/url.config');
+const ledger = require('./controllers/ledger.controller');
+// const urls = require('./config/url.config');
 const { ValidationError } = require('express-validation');
 var Response = require('./middlewares/response.middleware');
 var Authorize = require('./middlewares/auth.middleware');
@@ -61,6 +62,7 @@ app.use('/tutor', tutor);
 app.use('/tutor/setuser', tutor);
 app.use('/intern', intern);
 app.use('/intern/setuser', intern);
+app.use('/ledger', ledger);
 
 
 
