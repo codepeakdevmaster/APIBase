@@ -13,8 +13,8 @@ const LedgerValidation = {
             .required(),
         particulars: Joi.string()
             .required(),
-        creditamount: Joi.number(),
-        debitamount: Joi.number(),
+        creditamount: Joi.string(),
+        debitamount: Joi.string(),
     })
 };
 
