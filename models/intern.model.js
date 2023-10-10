@@ -54,3 +54,9 @@ module.exports.getInternByEmail = async function (email) {
     var intern = await Intern.findOne(query);
     return intern;
 };
+
+module.exports.getInternByUserId = async function(userid) {
+    var query = {userid: userid};
+    var intern = await Intern.findOne(query);
+    return intern;
+};

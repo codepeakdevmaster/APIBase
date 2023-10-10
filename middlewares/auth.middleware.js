@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken');
 var User = require('../models/user.model');
+var Intern = require('../models/intern.model');
 
-async function authenticateToken(req, res, next) {
+async function authenticateToken(checkIntern = false, req, res, next) {
     const authHeader = req.headers['authorization']
     const thisToken = authHeader && authHeader.split(' ')[1]
 
@@ -24,6 +25,18 @@ async function authenticateToken(req, res, next) {
             status: 401,
             message: "Not authorized."
         });
+    }
+    var intern = null;
+    if (checkIntern) {
+        // check for intern existance
+        intern = await Intern.getInternByUserId(usr._id);
+        if (!intern) {
+            console.log("No active session for intern user");
+            return res.status(401).json({
+                status: 401,
+                message: "Not authorized."
+            });
+        }
     }
 
     jwt.verify(thisToken, process.env.TOKEN_SECRET || 'QWCPDAILYKey', (err, user) => {

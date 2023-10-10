@@ -15,6 +15,7 @@ const lead = require('./controllers/lead.controller');
 const tutor = require('./controllers/tutor.controller');
 const intern = require('./controllers/intern.controller');
 const ledger = require('./controllers/ledger.controller');
+const review = require('./controllers/review.controller');
 // const urls = require('./config/url.config');
 const { ValidationError } = require('express-validation');
 var Response = require('./middlewares/response.middleware');
@@ -39,8 +40,8 @@ app.use(cookieParser());
 app.use(compression());
 
 app.use(Response);
-var noAuthUrls = ["/", "/ping", "/auth/login"];
-app.use((req, res, next) => { noAuthUrls.includes(req.url) ? next() : Authorize(req, res, next); });
+var noAuthUrls = ["/", "/ping", "/auth/login", "/auth/ilogin"];
+app.use((req, res, next) => { noAuthUrls.includes(req.url) ? next() : Authorize(false, req, res, next); });
 
 app.get('/', (_, res) => {
     console.log("Someone checked on our servers.");
@@ -63,7 +64,13 @@ app.use('/tutor/setuser', tutor);
 app.use('/intern', intern);
 app.use('/intern/setuser', intern);
 app.use('/ledger', ledger);
+app.use('/review/listall', review);
 
+// secondary authorization for intern app
+app.use((req, res, next) => { Authorize(true, req, res, next); });
+app.use('/review', review);
+app.use('/review/byintern', review);
+app.use('/review/byinternonday', review);
 
 
 app.use(function (err, req, res, next) {
