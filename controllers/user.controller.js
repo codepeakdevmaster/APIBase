@@ -21,6 +21,13 @@ const userValidation = {
     })
 };
 
+/**
+ * @swagger
+ * tags:
+ *   name: User
+ *   description: User APIs
+ */
+
 router.post('', validate(userValidation, {}, {}), async function (req, res) {
     let request = req.body;
     console.log(request);
@@ -136,3 +143,121 @@ router.delete('/:id', async (req, res) => {
 });
 
 module.exports = router;
+
+///
+/// User create API
+///
+/**
+ * @swagger
+ * /user:
+ *   post:
+ *     summary: User create API.
+ *     tags: [User]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Name of the user.
+ *                 example: name
+ *               phone:
+ *                 type: string
+ *                 description: Phone number of the user.
+ *                 example: 999999999
+ *               username:
+ *                 type: string
+ *                 description: username of the user.
+ *                 example: username
+ *               password:
+ *                 type: string
+ *                 description: Password of the user.
+ *                 example: Password$5263561
+ *               roles:
+ *                 type: array
+ *                 item:
+ *                   type: string
+ *                 description: Name of the user.
+ *                 example: ["admin", "tutor", "..."]
+ *     responses:
+ *       200:
+ *         description: Password updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: number
+ *                   description: the api call status
+ *                   example: 200
+ *                 message:
+ *                   type: string
+ *                   description: the api message
+ *                   example: Password updated successfully
+ *       400:
+ *         description: Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: number
+ *                   description: the api call status
+ *                   example: 400
+ *                 message:
+ *                   type: string
+ *                   description: the api message
+ *                   example: Error in processing request
+ *       401:
+ *         description: Unauthorized request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: number
+ *                   description: the api call status
+ *                   example: 401
+ *                 message:
+ *                   type: string
+ *                   description: the api message
+ *                   example: Unauthorized
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: number
+ *                   description: the api call status
+ *                   example: 404
+ *                 message:
+ *                   type: string
+ *                   description: the api message
+ *                   example: User not found
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: number
+ *                   description: the api call status
+ *                   example: 500
+ *                 message:
+ *                   type: string
+ *                   description: the api message
+ *                   example: Server error
+ */

@@ -24,6 +24,13 @@ const batchValidation = {
     })
 };
 
+/**
+ * @swagger
+ * tags:
+ *   name: Batch
+ *   description: Batches APIs
+ */
+
 router.post('', validate(batchValidation, {}, {}), async (req, res) => {
     let request = req.body;
     let batch = await Batch.findOne({ batchname: request.batchname });

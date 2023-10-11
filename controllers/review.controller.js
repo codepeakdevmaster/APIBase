@@ -67,12 +67,12 @@ router.get('/listall', async (req, res) => {
             return res.Exception("Error fetching reviews");
         });
     var response = [];
-    var interns = await Intern.find({ batchid: req.sessionUser.batchid })
+    var interns = await Intern.find()//{ batchid: req.sessionUser.batchid }
         .catch(err => {
             console.error(err);
             return res.Exception("Error fetching list of interns.");
         });
-    var tutors = await Tutor.find({ courses: req.sessionUser.courseid })//{ active: true }
+    var tutors = await Tutor.find()//{ courses: req.sessionUser.courseid }
         .catch(err => {
             console.error(err);
             return res.Exception("Error fetching list of tutors.");
@@ -177,7 +177,7 @@ router.get('/byinternonday/:year/:month/:day', async (req, res) => {
     let year = req.params.year;
     let month = req.params.month;
     let day = req.params.day;
-    
+
     var review = await Review.findOne({
         year: year,
         month: month,

@@ -1,25 +1,49 @@
 require("dotenv").config();
-const express = require('express');
-var http = require('http');
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-const cors = require('cors');
-const logger = require('morgan');
-const compression = require('compression');
-const db = require("./config/database.config");
-const auth = require('./controllers/auth.controller');
-const user = require('./controllers/user.controller');
-const course = require('./controllers/course.controller');
-const batch = require('./controllers/batch.controller');
-const lead = require('./controllers/lead.controller');
-const tutor = require('./controllers/tutor.controller');
-const intern = require('./controllers/intern.controller');
-const ledger = require('./controllers/ledger.controller');
-const review = require('./controllers/review.controller');
-// const urls = require('./config/url.config');
+
+///
+/// Web root
+///
+const express = require('express'),
+    http = require('http'),
+    bodyParser = require('body-parser'),
+    cookieParser = require('cookie-parser');
+
+///
+/// Utils
+///
+const cors = require('cors'),
+    compression = require('compression'),
+    logger = require('morgan');
+
+///
+/// Swagger UI
+///
+const swaggerJsdoc = require("swagger-jsdoc"),
+    swaggerUi = require("swagger-ui-express");
+
 const { ValidationError } = require('express-validation');
-var Response = require('./middlewares/response.middleware');
-var Authorize = require('./middlewares/auth.middleware');
+
+const db = require("./config/database.config");
+///
+/// Controllers
+///
+const auth = require('./controllers/auth.controller'),
+    user = require('./controllers/user.controller'),
+    course = require('./controllers/course.controller'),
+    batch = require('./controllers/batch.controller'),
+    lead = require('./controllers/lead.controller'),
+    tutor = require('./controllers/tutor.controller'),
+    intern = require('./controllers/intern.controller'),
+    ledger = require('./controllers/ledger.controller'),
+    review = require('./controllers/review.controller');
+
+///
+/// Middlewares
+///
+var Response = require('./middlewares/response.middleware'),
+    Authorize = require('./middlewares/auth.middleware');
+
+
 
 const app = express();
 app.use(cors());
@@ -40,8 +64,42 @@ app.use(cookieParser());
 app.use(compression());
 
 app.use(Response);
-var noAuthUrls = ["/", "/ping", "/auth/login", "/auth/ilogin"];
-app.use((req, res, next) => { noAuthUrls.includes(req.url) ? next() : Authorize(false, req, res, next); });
+const swaggerSpec = swaggerJsdoc({
+    definition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'Codepeak Track 8 API Base',
+            version: '1.0.0',
+            description:
+                'This is the REST API for Track 8 and child applications',
+            license: {
+                name: 'Licensed Under MIT',
+                url: 'https://spdx.org/licenses/MIT.html',
+            },
+            contact: {
+                name: 'Codepeak Technologies',
+                url: 'https://codepeaktechnologies.com/',
+            },
+        },
+        servers: [
+            {
+                url: 'http://localhost:4000',
+                description: 'Development server',
+            },
+            {
+                url: 'https://cpdaily-api.onrender.com',
+                description: 'Production server',
+            }
+        ],
+    },
+    apis: ["./controllers/*.js"],
+});
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// var noAuthUrls = ["/", "/ping", "/auth/login", "/auth/ilogin", "/review"];
+// app.use((req, res, next) => { noAuthUrls.includes(req.url) ? next() : Authorize(false, req, res, next); });
+
+
 
 app.get('/', (_, res) => {
     console.log("Someone checked on our servers.");
@@ -53,7 +111,34 @@ app.get('/ping', (_, res) => {
     res.Success('Pong! CodepeakDaily API is up and running.');
 });
 
-app.use('/auth', auth);
+app.use('/auth/logout', (req, res, next) => {
+    Authorize(false, req, res, next);
+}, auth);
+app.use('/auth/resetpassword', (req, res, next) => {
+    Authorize(false, req, res, next);
+}, auth);
+app.use('/auth/updatepassword', (req, res, next) => {
+    Authorize(false, req, res, next);
+}, auth);
+app.use('/auth', (req, res, next) => { next(); }, auth);
+
+// Special Authorizations
+app.use('/review/listall', (req, res, next) => {
+    Authorize(false, req, res, next);
+}, review);
+app.use('/review', (req, res, next) => {
+    Authorize(true, req, res, next);
+}, review);
+app.use('/review/byintern', (req, res, next) => {
+    Authorize(true, req, res, next);
+}, review);
+app.use('/review/byinternonday', (req, res, next) => {
+    console.log('From here');
+    Authorize(true, req, res, next);
+}, review);
+
+// Default Authorization
+app.use((req, res, next) => { Authorize(false, req, res, next); }); 
 app.use('/user', user);
 app.use('/course', course);
 app.use('/batch', batch);
@@ -64,13 +149,6 @@ app.use('/tutor/setuser', tutor);
 app.use('/intern', intern);
 app.use('/intern/setuser', intern);
 app.use('/ledger', ledger);
-app.use('/review/listall', review);
-
-// secondary authorization for intern app
-app.use((req, res, next) => { Authorize(true, req, res, next); });
-app.use('/review', review);
-app.use('/review/byintern', review);
-app.use('/review/byinternonday', review);
 
 
 app.use(function (err, req, res, next) {

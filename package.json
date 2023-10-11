@@ -27,7 +27,9 @@
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "path": "^0.12.7",
-    "shortid": "^2.2.16"
+    "shortid": "^2.2.16",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0"
   },
   "engines": {
     "node": ">=20"
