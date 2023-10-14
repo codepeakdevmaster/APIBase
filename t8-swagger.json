@@ -1,0 +1,91 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Codepeak Track 8 API Base",
+        "description": "This is the REST API for Track 8 Parent applications",
+        "termsOfService": "",
+        "contact": {
+            "name": "Codepeak Technologies Pvt. Ltd.",
+            "url": "https://codepeaktechnologies.com/"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:4000",
+            "description": "Development Server"
+        },
+        {
+            "url": "https://cpdaily-api.onrender.com",
+            "description": "Production Server"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "User Authentication APIs"
+        },
+        {
+            "name": "Batch",
+            "description": "Batch APIs"
+        },
+        {
+            "name": "Course",
+            "description": "Course APIs"
+        },
+        {
+            "name": "Intern",
+            "description": "Intern APIs"
+        },
+        {
+            "name": "Lead",
+            "description": "Lead APIs"
+        },
+        {
+            "name": "Ledger",
+            "description": "Ledger APIs"
+        },
+        {
+            "name": "Review",
+            "description": "Review APIs"
+        },
+        {
+            "name": "Tutor",
+            "description": "Tutor APIs"
+        },
+        {
+            "name": "User",
+            "description": "User APIs"
+        }
+    ],
+    "components": {
+        "schemas": {
+            "credentials": {
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "type": "string",
+                        "description": "The username.",
+                        "example": "emailid"
+                    },
+                    "password": {
+                        "type": "string",
+                        "description": "The password.",
+                        "example": "password"
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    }
+}

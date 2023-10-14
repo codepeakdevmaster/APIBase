@@ -26,7 +26,7 @@ async function authenticateToken(checkIntern, req, res, next) {
             message: "Not authorized."
         });
     }
-    console.log(`checkIntern : ${checkIntern}`);
+    // console.log(`checkIntern : ${checkIntern}`);
     var intern = null;
     // check for intern existance
     intern = await Intern.getInternByUserId(usr._id);
@@ -40,15 +40,18 @@ async function authenticateToken(checkIntern, req, res, next) {
         }
     } else {
         if (intern) {
-            console.log(`Intern user ${intern._id} ${intern.name} tried to access the main api`);
-            return res.status(401).json({
-                status: 401,
-                message: "Not authorized."
-            });
+            const allowedUrls = ["/auth/logout", "/auth/resetpassword", "/auth/updatepassword"];
+            if (!allowedUrls.includes(req.baseUrl)) {
+                console.log(`Intern user ${intern._id} ${intern.name} tried to access the main api`);
+                return res.status(401).json({
+                    status: 401,
+                    message: "Not authorized."
+                });
+            }
         } else {
-            const restrictedRoles = ["intern", "tutor"]; 
-            const containsRestrictedRoles = usr.roles.some(item => {return restrictedRoles.includes(item);});
-            if(containsRestrictedRoles) {
+            const restrictedRoles = ["intern", "tutor"];
+            const containsRestrictedRoles = usr.roles.some(item => { return restrictedRoles.includes(item); });
+            if (containsRestrictedRoles) {
                 console.log(`Actions on main API blocked for ${usr._id} as the role dont have permission.`);
                 return res.status(401).json({
                     status: 401,
@@ -66,7 +69,7 @@ async function authenticateToken(checkIntern, req, res, next) {
                 message: "Not authorized."
             });
         }
-        // console.log(user);
+        console.log(user);
         req.sessionUser = user
 
         next()

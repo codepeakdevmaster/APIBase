@@ -142,22 +142,31 @@ router.get('/byintern', async (req, res) => {
         return res.Exception(`Error fetching reviews by ${req.sessionUser.internid}`);
     });
     var response = [];
-    var interns = await Intern.find({ batchid: req.sessionUser.batchid })
-        .catch(err => {
-            console.error(err);
-            return res.Exception("Error fetching list of interns.");
-        });
+    // var interns = await Intern.find({ batchid: req.sessionUser.batchid })
+    //     .catch(err => {
+    //         console.error(err);
+    //         return res.Exception("Error fetching list of interns.");
+    //     });
+    console.log(req.sessionUser.courseid);
     var tutors = await Tutor.find({ courses: req.sessionUser.courseid })
         .catch(err => {
             console.error(err);
             return res.Exception("Error fetching list of tutors.");
         });
+    console.log(tutors);
     reviews.map((review, _) => {
         var tutor = tutors.find(a => a._id == review.tutorid);
-        var intern = interns.find(a => a._id == review.internid);
+        // var intern = interns.find(a => a._id == review.internid);
         response.push({
-            intern: intern,
-            tutor: tutor,
+            // intern: intern,
+            tutor: {
+                id: tutor._id,
+                userid: tutor.userid,
+                name: tutor.name,
+                phone: tutor.phone,
+                email: tutor.email,
+                qualification: tutor.qualification
+            },
             year: review.year,
             month: review.month,
             day: review.day,
@@ -189,19 +198,26 @@ router.get('/byinternonday/:year/:month/:day', async (req, res) => {
     });
     if (!review) return res.NotFound(`Review by ${req.sessionUser.internid} not fonund for the day ${year}/${month}/${day}`);
     else {
-        var intern = await Intern.findById(review.internid)
-            .catch(err => {
-                console.error(err);
-                return res.Exception(`Error fetching intern details of ${review.interind}.`);
-            });
+        // var intern = await Intern.findById(review.internid)
+        //     .catch(err => {
+        //         console.error(err);
+        //         return res.Exception(`Error fetching intern details of ${review.interind}.`);
+        //     });
         var tutor = await Tutor.findById(review.tutorid)//{ active: true }
             .catch(err => {
                 console.error(err);
                 return res.Exception(`Error fetching tutor details of ${review.tutorid}.`);
             });
         var response = {
-            intern: intern,
-            tutor: tutor,
+            // intern: intern,
+            tutor: {
+                id: tutor._id,
+                userid: tutor.userid,
+                name: tutor.name,
+                phone: tutor.phone,
+                email: tutor.email,
+                qualification: tutor.qualification
+            },
             year: review.year,
             month: review.month,
             day: review.day,

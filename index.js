@@ -20,6 +20,8 @@ const cors = require('cors'),
 ///
 const swaggerJsdoc = require("swagger-jsdoc"),
     swaggerUi = require("swagger-ui-express");
+const t8docs = require("./t8-swagger.json"),
+    t8iradocs = require("./t8ira-swagger.json");
 
 const { ValidationError } = require('express-validation');
 
@@ -64,37 +66,47 @@ app.use(cookieParser());
 app.use(compression());
 
 app.use(Response);
-const swaggerSpec = swaggerJsdoc({
-    definition: {
-        openapi: '3.0.0',
-        info: {
-            title: 'Codepeak Track 8 API Base',
-            version: '1.0.0',
-            description:
-                'This is the REST API for Track 8 and child applications',
-            license: {
-                name: 'Licensed Under MIT',
-                url: 'https://spdx.org/licenses/MIT.html',
-            },
-            contact: {
-                name: 'Codepeak Technologies',
-                url: 'https://codepeaktechnologies.com/',
-            },
-        },
-        servers: [
-            {
-                url: 'http://localhost:4000',
-                description: 'Development server',
-            },
-            {
-                url: 'https://cpdaily-api.onrender.com',
-                description: 'Production server',
-            }
-        ],
-    },
-    apis: ["./controllers/*.js"],
-});
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// const swaggerSpec = swaggerJsdoc({
+//     definition: {
+//         openapi: '3.0.0',
+//         info: {
+//             title: 'Codepeak Track 8 API Base',
+//             version: '1.0.0',
+//             description:
+//                 'This is the REST API for Track 8 and child applications',
+//             license: {
+//                 name: 'Licensed Under MIT',
+//                 url: 'https://spdx.org/licenses/MIT.html',
+//             },
+//             contact: {
+//                 name: 'Codepeak Technologies',
+//                 url: 'https://codepeaktechnologies.com/',
+//             },
+//         },
+//         servers: [
+//             {
+//                 url: 'http://localhost:4000',
+//                 description: 'Development server',
+//             },
+//             {
+//                 url: 'https://cpdaily-api.onrender.com',
+//                 description: 'Production server',
+//             }
+//         ],
+//     },
+//     apis: ["./controllers/*.js"],
+// });
+
+var options = {
+    customCssUrl:
+        "https://cdn.jsdelivr.net/npm/swagger-ui-themes@3.0.0/themes/3.x/theme-classic.css",
+    customCss: '.swagger-ui {padding: 0px 100px;} .swagger-ui .topbar {display: none;} .swagger-ui .scheme-container {box-shadow: none;}'
+    // .swagger-ui .info .title span {display: none;}
+}
+
+app.use('/t8-docs', swaggerUi.serveFiles(t8docs), swaggerUi.setup(t8docs, options));
+app.use('/t8ira-docs', swaggerUi.serveFiles(t8iradocs), swaggerUi.setup(t8iradocs, options));
+
 
 // var noAuthUrls = ["/", "/ping", "/auth/login", "/auth/ilogin", "/review"];
 // app.use((req, res, next) => { noAuthUrls.includes(req.url) ? next() : Authorize(false, req, res, next); });
@@ -138,7 +150,7 @@ app.use('/review/byinternonday', (req, res, next) => {
 }, review);
 
 // Default Authorization
-app.use((req, res, next) => { Authorize(false, req, res, next); }); 
+app.use((req, res, next) => { Authorize(false, req, res, next); });
 app.use('/user', user);
 app.use('/course', course);
 app.use('/batch', batch);
