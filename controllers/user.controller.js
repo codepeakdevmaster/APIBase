@@ -21,13 +21,6 @@ const userValidation = {
     })
 };
 
-/**
- * @swagger
- * tags:
- *   name: User
- *   description: User APIs
- */
-
 router.post('', validate(userValidation, {}, {}), async function (req, res) {
     let request = req.body;
     console.log(request);
